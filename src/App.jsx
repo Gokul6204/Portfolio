@@ -117,7 +117,7 @@ const Portfolio = () => {
       degree: 'Secondary School Leaving Certificate (SSLC)',
       institution: 'Amala Higher Secondary School',
       period: '2018 - 2019',
-      location: 'Dharmapuri, Tamil Nadu', 
+      location: 'Dharmapuri, Tamil Nadu',
       specialization: 'General Education',
       icon: <Database size={20} />
     }
@@ -146,6 +146,40 @@ const Portfolio = () => {
     { name: 'MySQL & Oracle', icon: <Database /> },
     { name: 'Numpy', icon: <Cpu /> },
   ];
+
+  const initialCerts = [
+    {
+      id: 1,
+      title: 'Python for Data Science',
+      issuer: 'IBM',
+      date: '2024',
+      img: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop',
+    },
+    {
+      id: 2,
+      title: 'Machine Learning Specialization',
+      issuer: 'Stanford Online',
+      date: '2023',
+      img: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop',
+    },
+    {
+      id: 3,
+      title: 'Data Analytics Professional',
+      issuer: 'Google',
+      date: '2023',
+      img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop',
+    },
+    {
+      id: 4,
+      title: 'Full Stack Web Development',
+      issuer: 'Meta',
+      date: '2024',
+      img: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=2031&auto=format&fit=crop',
+    }
+  ];
+
+  const [certList, setCertList] = useState(initialCerts);
+  const [isPaused, setIsPaused] = useState(false);
 
   const projects = [
     {
@@ -203,6 +237,25 @@ const Portfolio = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Certifications Queue Rotation
+  const rotateToLast = (index) => {
+    setCertList((prev) => {
+      const newList = [...prev];
+      const [clickedCard] = newList.splice(index, 1);
+      newList.push(clickedCard);
+      return newList;
+    });
+  };
+
+  // Autoplay for Certifications
+  React.useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      rotateToLast(0); // Move first to last
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -350,6 +403,53 @@ const Portfolio = () => {
             </div>
             {/* Background Glow */}
             <div className="edu-glow"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Certifications Section - Stacked Layout */}
+      <section
+        id="certifications"
+        className="certifications-section"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <div className="container">
+          <h2 className="section-title certification-title">Certifications</h2>
+          <div className="certs-stack-container">
+            {certList.map((cert, i) => (
+              <div
+                key={cert.id}
+                className="cert-stack-card"
+                onClick={() => rotateToLast(i)}
+                style={{
+                  zIndex: certList.length - i,
+                  transform: `translateX(calc(${i} * var(--stack-offset, 60px))) scale(${1 - i * 0.09})`,
+                  opacity: 1,
+                  cursor: i === 0 ? 'default' : 'pointer'
+                }}
+              >
+                <div className="cert-stack-inner glass">
+                  <div className="cert-img-box">
+                    <img src={cert.img} alt={cert.title} />
+                    <div className="cert-overlay-logo">
+                      <div className="logo-placeholder">
+                        <span className="issuer-initial">{cert.issuer[0]}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="cert-stack-content">
+                    <span className="cert-badge">{cert.date}</span>
+                    <h3>{cert.title}</h3>
+                    <p className="issuer-name">{cert.issuer}</p>
+                    <div className="cert-footer">
+                      <span className="verify-text">View Certificate</span>
+                      <ExternalLink size={14} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -858,6 +958,167 @@ const Portfolio = () => {
           .wheel-item.active::before { display: none; }
           .edu-detail-box { padding: 2rem; width: 100%; }
         }
+        /* Certifications Section - Stacked Layout */
+        .certifications-section {
+          padding: 100px 0;
+          background: radial-gradient(circle at center, #1a1a1c 0%, #030303 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        .certification-title {
+          color: white;
+          font-weight: 800;
+          margin-bottom: 5rem;
+          text-align: center;
+        }
+        .certs-stack-container {
+          --stack-offset: 60px;
+          position: relative;
+          height: 450px;
+          max-width: 900px;
+          margin: 0 auto;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          padding-left: 2rem;
+        }
+        .cert-stack-card {
+          position: absolute;
+          width: 550px;
+          height: 380px;
+          transition: all 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+          transform-origin: right center;
+        }
+        .cert-stack-inner {
+            width: 100%;
+            height: 100%;
+            background: #000000 !important;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .cert-img-box {
+            height: 60%;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .cert-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: 0.5s ease;
+        }
+        .cert-stack-card:hover .cert-img-box img {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .cert-overlay-logo {
+            position: absolute;
+            bottom: -25px;
+            left: 30px;
+            z-index: 5;
+        }
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #000;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .issuer-initial {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: white;
+        }
+        .cert-stack-content {
+            padding: 2rem 2.5rem;
+            flex: 1;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cert-badge {
+            font-size: 0.8rem;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-primary);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            width: fit-content;
+            margin-bottom: 0.8rem;
+        }
+        .cert-stack-content h3 {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 0.4rem;
+        }
+        .issuer-name {
+            color: #888;
+            font-size: 1rem;
+        }
+        .cert-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+        .cert-stack-card:hover .cert-footer {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .certs-stack-container {
+                --stack-offset: 40px;
+                height: 350px;
+                padding-left: 0;
+                justify-content: center;
+            }
+            .cert-stack-card {
+                width: 280px;
+                height: 320px;
+            }
+            .cert-stack-content {
+                padding: 1.5rem;
+            }
+            .cert-stack-content h3 {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .certs-stack-container {
+                --stack-offset: 25px;
+                height: 300px;
+            }
+            .cert-stack-card {
+                width: 240px;
+                height: 280px;
+            }
+            .cert-stack-content {
+                padding: 1rem;
+            }
+            .cert-stack-content h3 {
+                font-size: 1rem;
+            }
+            .issuer-name {
+                font-size: 0.8rem;
+            }
+        }
+
         .projects-showcase-section {
           padding-top: 5rem;
           padding-bottom: 5rem;
