@@ -100,6 +100,7 @@ const Portfolio = () => {
       institution: 'Jayalakshmi Institute of Technology',
       period: '2021 - 2025',
       specialization: 'Computer Science & Engineering',
+      location: 'Dharmapuri, Tamil Nadu',
       icon: <Code size={20} />
     },
     {
@@ -107,6 +108,7 @@ const Portfolio = () => {
       degree: 'Higher Secondary Schooling (HSC)',
       institution: 'Amala Higher Secondary School',
       period: '2019 - 2021',
+      location: 'Dharmapuri, Tamil Nadu',
       specialization: 'Maths,Physics,Chemistry',
       icon: <Layers size={20} />
     },
@@ -115,6 +117,7 @@ const Portfolio = () => {
       degree: 'Secondary School Leaving Certificate (SSLC)',
       institution: 'Amala Higher Secondary School',
       period: '2018 - 2019',
+      location: 'Dharmapuri, Tamil Nadu', 
       specialization: 'General Education',
       icon: <Database size={20} />
     }
@@ -183,14 +186,15 @@ const Portfolio = () => {
       const windowHeight = window.innerHeight;
 
       // Calculate how much of the section has been scrolled through
-      // We start calculating once the top of the section enters the bottom of the viewport
+      // We start calculating once the top of the section enters the middle of the viewport
       // and finish when the bottom of the section leaves the top.
       const start = rect.top;
       const end = rect.bottom;
+      const triggerPoint = windowHeight / 2;
 
-      if (start < windowHeight && end > 0) {
+      if (start < triggerPoint && end > 0) {
         const totalHeight = rect.height;
-        const scrolled = windowHeight - start;
+        const scrolled = triggerPoint - start;
         const progress = Math.max(0, Math.min(1, scrolled / totalHeight));
         setResumeProgress(progress);
       }
@@ -341,6 +345,7 @@ const Portfolio = () => {
               <div className="edu-detail-body">
                 <h4>{education[activeEdu].institution}</h4>
                 <p><strong>Field:</strong> {education[activeEdu].specialization}</p>
+                <p><strong>Location:</strong> {education[activeEdu].location}</p>
               </div>
             </div>
             {/* Background Glow */}
@@ -391,11 +396,11 @@ const Portfolio = () => {
               <div className="resume-content-mask">
                 <div
                   className="resume-pdf-mover"
-                  style={{ transform: `translateY(calc(-${resumeProgress * 50}%))` }}
+                  style={{ transform: `translateY(calc(-${resumeProgress * 40}%))` }}
                 >
                   <div className="resume-pdf-container" ref={setContainerRef}>
                     <Document
-                      file="/resume.pdf"
+                      file="/Gokul_Resume.pdf"
                       onLoadSuccess={({ numPages }) => setNumPages(numPages)}
                       loading={<div className="loader">Loading Resume...</div>}
                       error={<div className="error-msg">Please ensure resume.pdf is in the public folder.</div>}
@@ -414,7 +419,7 @@ const Portfolio = () => {
               <div className="resume-overlay-fade"></div>
 
               <div className="resume-footer-actions">
-                <a href="/resume.pdf" download="Gokul_M_Resume.pdf" className="btn btn-primary">
+                <a href="/Gokul_Resume.pdf" download="Gokul_Resume.pdf" className="btn btn-primary">
                   <Download size={18} /> Download Full CV
                 </a>
               </div>
@@ -527,7 +532,7 @@ const Portfolio = () => {
           text-decoration: none;
           color: var(--text-primary);
           font-weight: 500;
-          font-size: 0.9rem;
+          font-size: 1rem;
           transition: var(--transition);
         }
         .nav-link:hover {
@@ -550,8 +555,9 @@ const Portfolio = () => {
           border-radius: 50%;
         }
         .hero-name {
-          font-size: 3.5rem;
+          font-size: clamp(2.5rem, 8vw, 4.5rem);
           margin-bottom: 1rem;
+          line-height: 1.1;
         }
         .hero-about {
           max-width: 600px;
@@ -596,7 +602,7 @@ const Portfolio = () => {
           display: flex;
           width: max-content;
           gap: 2rem;
-          animation: scroll 30s linear infinite;
+          animation: scroll 20s linear infinite;
         }
         @keyframes scroll {
           0% { transform: translateX(0); }
@@ -878,7 +884,7 @@ const Portfolio = () => {
           width: 100%;
           height: 100%;
           clip-path: inset(100% 0 0 0); /* Start hidden at bottom */
-          transition: clip-path 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+          transition: clip-path 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         /* Ensure first project is visible by default */
         .showcase-img-layer:first-child {
@@ -911,10 +917,19 @@ const Portfolio = () => {
           overflow-y: auto;
           padding: 0 3rem;
           scroll-snap-type: y mandatory;
-          scrollbar-width: none; /* Hide scrollbar */
+          scrollbar-width: thin;
+          scrollbar-color: var(--accent-primary) transparent;
         }
         .showcase-right::-webkit-scrollbar {
-          display: none;
+          display: block;
+          width: 5px;
+        }
+        .showcase-right::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .showcase-right::-webkit-scrollbar-thumb {
+          background: var(--accent-secondary);
+          border-radius: 10px;
         }
         .showcase-item-content {
           height: 100%;
@@ -940,10 +955,44 @@ const Portfolio = () => {
         }
 
         @media (max-width: 1024px) {
-          .showcase-grid { grid-template-columns: 1fr; height: auto; }
-          .showcase-left { height: 40vh; }
-          .showcase-right { height: auto; overflow: visible; padding: 2rem; }
-          .showcase-item-content { height: auto; padding: 3rem 0; }
+          .showcase-grid { 
+            display: grid;
+            grid-template-columns: 1fr; 
+            grid-template-rows: minmax(300px, 45%) 1fr; /* Split into 2 rows, 1 column */
+            height: 90vh; 
+            max-height: 1000px;
+            overflow: hidden;
+          }
+          .showcase-left { 
+            height: 100%; 
+            width: 100%;
+            border-bottom: 1px solid var(--glass-border);
+          }
+          .showcase-right { 
+            height: 100%; 
+            overflow-y: auto; 
+            padding: 0 1.5rem; 
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-primary) transparent;
+          }
+          .showcase-right::-webkit-scrollbar {
+            display: block;
+            width: 3px;
+          }
+          .showcase-right::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 10px;
+          }
+          .showcase-item-content { 
+            min-height: 100.1%; 
+            padding: 4rem 0.5rem; 
+            scroll-snap-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+          }
+          .showcase-item-content h3 { font-size: 1.6rem; margin-bottom: 1rem; }
+          .showcase-item-content p { font-size: 0.95rem; margin-bottom: 1.5rem; }
         }
 
         /* Resume */
@@ -1116,9 +1165,7 @@ const Portfolio = () => {
         /* Extra Large Monitors (4K+) */
         @media (min-width: 2000px) {
           .container { max-width: 1600px; }
-          .hero-name { font-size: 5rem; }
-          .hero-about { max-width: 900px; font-size: 1.4rem; }
-          .section-title { font-size: 3.5rem; }
+          .hero-about { max-width: 900px; }
         }
 
         /* Large Monitors & Laptops */
@@ -1129,7 +1176,6 @@ const Portfolio = () => {
         /* Medium Monitors / Tablets in Landscape */
         @media (max-width: 1024px) {
           .container { max-width: 960px; }
-          .hero-name { font-size: 3rem; }
           .skills-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
@@ -1139,10 +1185,7 @@ const Portfolio = () => {
           section { padding: 60px 0; }
           .nav-container { height: 70px; }
           .nav-links { gap: 1rem; }
-          .nav-link { font-size: 0.8rem; }
-          .hero-name { font-size: 2.5rem; }
-          .hero-about { font-size: 1rem; margin-bottom: 2rem; }
-          .section-title { font-size: 2rem; margin-bottom: 2rem; }
+          .hero-about { margin-bottom: 2rem; }
           .edu-card { flex-direction: column; gap: 1rem; }
           .skills-grid { grid-template-columns: 1fr; }
           .projects-grid { grid-template-columns: 1fr; }
@@ -1161,7 +1204,6 @@ const Portfolio = () => {
           .nav-container { flex-direction: column; height: auto; padding: 1rem 0; gap: 0.5rem; }
           .nav-links { gap: 1rem; }
           .hero-img-container { width: 150px; height: 150px; }
-          .hero-name { font-size: 2rem; }
           .nav-logo { font-size: 1.2rem; }
           .tool-card { min-width: 120px; padding: 0.6rem 1rem; font-size: 0.9rem; }
           .btn { width: 100%; justify-content: center; }
@@ -1196,7 +1238,7 @@ const ProjectScrollItem = ({ project, index, setActive, rootId }) => {
       },
       {
         root: root,
-        threshold: 0.6, // Trigger when 60% of text is in view
+        threshold: 0.3, // Lower threshold for better mobile triggering
         rootMargin: "0px"
       }
     );

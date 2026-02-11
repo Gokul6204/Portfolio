@@ -22,6 +22,35 @@
   scroll-behavior: smooth;
 }
 
+html {
+  font-size: 16px;
+  /* Base size */
+}
+
+@media (max-width: 1440px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1024px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 12px;
+  }
+}
+
 html,
 body {
   font-family: 'Inter', sans-serif;
@@ -38,6 +67,7 @@ h3,
 h4 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .container {
@@ -87,7 +117,7 @@ section {
 }
 
 .section-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
   margin-bottom: 3rem;
   text-align: center;
 }
